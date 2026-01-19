@@ -1,0 +1,32 @@
+syntax: C(n k) ;constant functions with k arguments that returns n
+def: C(n k) = n
+func: C(1 1)
+alg: C(1 1)(5) = 1
+
+S(x) ;successor function that returns x+1
+S(x) = x+1 
+S(0) = 1 
+
+P(i k) ;projection functions with k arguments that returns xi, 1 <= i <= k
+P(i k) = xi
+P(1 3)
+P(1 3)(1 2 3) = 1
+
+h(x1 ... xm) ;given a m-ary function
+g1(x1 ... xk) ... gm(x1 ... xk) ;given m k-ary functions
+o[h g1 ... gm] = f ;composition operator
+f(x1 ... xk) = h(g1(x1 ... xk) ... gm(x1 ... xk))
+
+g(x1 ... xk) ;given a k-ary function
+h(y z x1 ... xk) ;given a (k+2)-ary function
+p[g h] = f ; primitive recursion operator, (k+1)-ary f
+f(0 x1 ... xk) = g(x1 ... xk)
+f(S(y) x1 ... xk) = h(y f(y x1 ... xk) x1 ... xk)
+
+add(a b) = p[P{1 1} o[S P{2 3}]]
+         = p[P{S(0) S(0)} o[S P{S(S(0)) S(S(S(0)))}]]
+         = (recursion (projection 1 1) (composition (successor) ((projection 2 3)) 3) 1) ;compiled to lisp
+
+add(1 4) = p[P{1 1} o[S P{2 3}]](1 4) ;syntactic sugar
+         = o[p[P{1 1} o[S P{2 3}]] C{1 0} C{4 0}] ;human-readable numbers
+         = o[p[P{S(0) S(0)} o[S P{S(S(0)) S(S(S(0)))}]] C{S(0) 0} C{S(S(S(0))) 0}] ;parser actually recognizes
